@@ -8,6 +8,8 @@ requests = "*"
 numpy = "*"
 pandas = "*"
 matplotlib = "*"
+torch = "*"
+torchvision = "*"
 
 [dev-packages]
 
