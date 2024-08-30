@@ -244,15 +244,25 @@ def main():
     (x_train, t_train), (x_test, t_test) = load_mnist(True, True, True)
     network = TwoLayerNet(784, 50, 10)
 
-    x_batch = x_train[:3]
-    t_batch = t_train[:3]
+    iters_num = 100000
+    train_size = x_train.shape[0]
+    minibatch_size = 100
+    learning_rate = 0.1
 
-    grad_num  = network.numerical_gradient(x_batch, t_batch)
-    grad_back = network.gradient(x_batch, t_batch)
+    iter_per_epoch = max(train_size / minibatch_size, 1)
 
-    for key in grad_num.keys():
-        diff = np.average(np.abs(grad_back[key] - grad_num[key]))
-        print(key + ":" + str(diff))
+    for epoch in range(iters_num):
+        selected_indices = np.random.choice(train_size, minibatch_size)
+        x_batch = x_train[selected_indices]
+        t_batch = t_train[selected_indices]
+        
+        grads = network.gradient(x_batch, t_batch)
+
+        for key in ('W1', 'b1', 'W2', 'b2'):
+            network.params[key] -= learning_rate * grads[key]
+
+        if epoch % iter_per_epoch == 0:
+            print(network.accuracy(x_train, t_train), network.accuracy(x_test, t_test))
 
 if __name__ == '__main__':
     main()
